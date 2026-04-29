@@ -36,20 +36,20 @@ async function pick(item: Prescription) {
 }
 
 async function submit(item: Prescription) {
-  if (!confirm('Submit this prescription for pharmacist audit?')) return
+  if (!confirm('是否提交此处方供药剂师审核？')) return
   current.value = await submitPrescription(item.id)
   await load()
 }
 
 function statusLabel(value: string) {
   const map: Record<string, string> = {
-    DRAFT: 'Draft',
-    PENDING_AUDIT: 'Pending audit',
-    APPROVED: 'Approved',
-    REJECTED: 'Rejected',
-    NEED_MODIFY: 'Need modify',
-    PAID: 'Paid',
-    EXPIRED: 'Expired',
+    DRAFT: '草稿',
+    PENDING_AUDIT: '待审核',
+    APPROVED: '已通过',
+    REJECTED: '已驳回',
+    NEED_MODIFY: '需修改',
+    PAID: '已支付',
+    EXPIRED: '已过期',
   }
   return map[value] ?? value
 }
@@ -62,9 +62,9 @@ function statusClass(value: string | null) {
 }
 
 function stockLabel(value: string | null) {
-  if (value === 'INSUFFICIENT') return 'Insufficient'
-  if (value === 'LOW') return 'Low'
-  return 'Enough'
+  if (value === 'INSUFFICIENT') return '不足'
+  if (value === 'LOW') return '偏低'
+  return '充足'
 }
 
 function stockClass(value: string | null) {
@@ -82,30 +82,30 @@ function formatTime(value: string | null) {
   <section class="page">
     <div class="page-header">
       <div>
-        <h1>{{ isDoctor ? 'Doctor Prescriptions' : 'My Prescriptions' }}</h1>
-        <p>{{ isDoctor ? 'Create and submit prescriptions for audit.' : 'View prescription audit status.' }}</p>
+        <h1>{{ isDoctor ? '医生处方' : '我的处方' }}</h1>
+        <p>{{ isDoctor ? '创建并提交处方进行审核。' : '查看处方审核状态。' }}</p>
       </div>
       <button v-if="isDoctor" class="primary-button" type="button" @click="router.push('/doctor/sessions')">
-        New from session
+        从会话创建
       </button>
     </div>
 
     <div class="toolbar rx-toolbar">
       <select v-model="status" @change="load">
-        <option value="">All status</option>
-        <option value="DRAFT">Draft</option>
-        <option value="PENDING_AUDIT">Pending audit</option>
-        <option value="APPROVED">Approved</option>
-        <option value="REJECTED">Rejected</option>
-        <option value="NEED_MODIFY">Need modify</option>
+        <option value="">所有状态</option>
+        <option value="DRAFT">草稿</option>
+        <option value="PENDING_AUDIT">待审核</option>
+        <option value="APPROVED">已通过</option>
+        <option value="REJECTED">已驳回</option>
+        <option value="NEED_MODIFY">需修改</option>
       </select>
-      <button class="primary-button" type="button" @click="load">Refresh</button>
+      <button class="primary-button" type="button" @click="load">刷新</button>
     </div>
 
     <div class="rx-layout">
       <div class="rx-list">
-        <div v-if="loading" class="empty-text">Loading...</div>
-        <div v-else-if="records.length === 0" class="empty-text">No prescriptions yet.</div>
+        <div v-if="loading" class="empty-text">加载中...</div>
+        <div v-else-if="records.length === 0" class="empty-text">暂无处方。</div>
         <template v-else>
           <button
             v-for="item in records"
@@ -118,14 +118,14 @@ function formatTime(value: string | null) {
             <strong>{{ item.diagnosis }}</strong>
             <small>{{ item.prescriptionNo }}</small>
             <span>{{ isDoctor ? item.patientName : item.doctorName }}</span>
-            <span>{{ item.items.length }} medicines / ¥{{ item.totalAmount }}</span>
+            <span>{{ item.items.length }} 种药品 / ¥{{ item.totalAmount }}</span>
             <span>{{ formatTime(item.createTime) }}</span>
           </button>
         </template>
       </div>
 
       <div class="rx-detail">
-        <div v-if="!current" class="empty-text">Select a prescription to view details.</div>
+        <div v-if="!current" class="empty-text">选择处方以查看详情。</div>
         <template v-else>
           <div class="detail-head">
             <div>
@@ -136,30 +136,30 @@ function formatTime(value: string | null) {
           </div>
 
           <div class="detail-grid">
-            <span>Patient: {{ current.patientName || '-' }}</span>
-            <span>Doctor: {{ current.doctorName || '-' }}</span>
-            <span>Submitted: {{ formatTime(current.submitTime) }}</span>
-            <span>Valid until: {{ formatTime(current.validUntil) }}</span>
+            <span>患者: {{ current.patientName || '-' }}</span>
+            <span>医生: {{ current.doctorName || '-' }}</span>
+            <span>提交时间: {{ formatTime(current.submitTime) }}</span>
+            <span>有效期至: {{ formatTime(current.validUntil) }}</span>
           </div>
 
           <div class="note">
-            <strong>Doctor note</strong>
-            <p>{{ current.doctorNote || 'None' }}</p>
+            <strong>医生附言</strong>
+            <p>{{ current.doctorNote || '无' }}</p>
           </div>
           <div class="note">
-            <strong>Patient instruction</strong>
-            <p>{{ current.patientInstruction || 'None' }}</p>
+            <strong>用药说明</strong>
+            <p>{{ current.patientInstruction || '无' }}</p>
           </div>
 
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Medicine</th>
-                  <th>Qty</th>
-                  <th>Usage</th>
-                  <th>Course</th>
-                  <th>Stock</th>
+                  <th>药品</th>
+                  <th>数量</th>
+                  <th>用法</th>
+                  <th>疗程</th>
+                  <th>库存</th>
                 </tr>
               </thead>
               <tbody>
@@ -170,12 +170,12 @@ function formatTime(value: string | null) {
                   </td>
                   <td>{{ drug.quantity }}</td>
                   <td>{{ drug.dosage }} / {{ drug.frequency }} / {{ drug.usageMethod }}</td>
-                  <td>{{ drug.durationDays }} days</td>
+                  <td>{{ drug.durationDays }} 天</td>
                   <td>
                     <span :class="['status-pill', stockClass(drug.stockStatus)]">
                       {{ stockLabel(drug.stockStatus) }}
                     </span>
-                    <small>Current {{ drug.currentStock ?? '-' }}</small>
+                    <small>当前 {{ drug.currentStock ?? '-' }}</small>
                   </td>
                 </tr>
               </tbody>
@@ -183,8 +183,8 @@ function formatTime(value: string | null) {
           </div>
 
           <div v-if="current.latestAudit" class="note audit-note">
-            <strong>Latest audit</strong>
-            <p>{{ current.latestAudit.advice || 'No advice.' }}</p>
+            <strong>最新审核记录</strong>
+            <p>{{ current.latestAudit.advice || '暂无建议。' }}</p>
             <small>{{ current.latestAudit.stockResult }}</small>
             <small>{{ current.latestAudit.interactionResult }}</small>
           </div>
@@ -196,7 +196,7 @@ function formatTime(value: string | null) {
               type="button"
               @click="submit(current)"
             >
-              Submit audit
+              提交审核
             </button>
           </div>
         </template>
