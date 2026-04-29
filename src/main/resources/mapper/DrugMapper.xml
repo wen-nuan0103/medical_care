@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuenai.medical.mapper.DrugMapper">
+
+    <resultMap id="DrugVOMap" type="com.xuenai.medical.model.vo.DrugVO">
+        <constructor>
+            <arg column="id"                   javaType="Long"/>
+            <arg column="drug_code"            javaType="String"/>
+            <arg column="drug_name"            javaType="String"/>
+            <arg column="generic_name"         javaType="String"/>
+            <arg column="category_id"          javaType="Long"/>
+            <arg column="category_name"        javaType="String"/>
+            <arg column="specification"        javaType="String"/>
+            <arg column="dosage_form"          javaType="String"/>
+            <arg column="manufacturer"         javaType="String"/>
+            <arg column="price"                javaType="java.math.BigDecimal"/>
+            <arg column="stock_quantity"       javaType="Integer"/>
+            <arg column="warning_threshold"    javaType="Integer"/>
+            <arg column="prescription_required" javaType="Integer"/>
+            <arg column="insurance_covered"    javaType="Integer"/>
+            <arg column="status"               javaType="Integer"/>
+            <arg column="create_time"          javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="DrugDetailVOMap" type="com.xuenai.medical.model.vo.DrugDetailVO">
+        <constructor>
+            <arg column="id"                   javaType="Long"/>
+            <arg column="drug_code"            javaType="String"/>
+            <arg column="drug_name"            javaType="String"/>
+            <arg column="generic_name"         javaType="String"/>
+            <arg column="category_id"          javaType="Long"/>
+            <arg column="category_name"        javaType="String"/>
+            <arg column="specification"        javaType="String"/>
+            <arg column="dosage_form"          javaType="String"/>
+            <arg column="manufacturer"         javaType="String"/>
+            <arg column="approval_no"          javaType="String"/>
+            <arg column="price"                javaType="java.math.BigDecimal"/>
+            <arg column="stock_quantity"       javaType="Integer"/>
+            <arg column="warning_threshold"    javaType="Integer"/>
+            <arg column="prescription_required" javaType="Integer"/>
+            <arg column="insurance_covered"    javaType="Integer"/>
+            <arg column="usage_instruction"    javaType="String"/>
+            <arg column="contraindication"     javaType="String"/>
+            <arg column="adverse_reaction"     javaType="String"/>
+            <arg column="status"               javaType="Integer"/>
+            <arg column="create_time"          javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="drugCondition">
+        <where>
+            d.deleted = 0
+            <if test="keyword != null and keyword != ''">
+                AND (d.drug_name LIKE CONCAT('%', #{keyword}, '%')
+                  OR d.generic_name LIKE CONCAT('%', #{keyword}, '%')
+                  OR d.drug_code LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="categoryId != null">AND d.category_id = #{categoryId}</if>
+            <if test="prescriptionRequired != null">AND d.prescription_required = #{prescriptionRequired}</if>
+            <if test="insuranceCovered != null">AND d.insurance_covered = #{insuranceCovered}</if>
+            <if test="status != null">AND d.status = #{status}</if>
+        </where>
+    </sql>
+
+    <!-- 分页查询药品列表 -->
+    <select id="selectDrugVOPage" resultMap="DrugVOMap">
+        SELECT d.id, d.drug_code, d.drug_name, d.generic_name, d.category_id, c.category_name,
+               d.specification, d.dosage_form, d.manufacturer, d.price, d.stock_quantity,
+               d.warning_threshold, d.prescription_required, d.insurance_covered, d.status, d.create_time
+        FROM drug d
+        LEFT JOIN drug_category c ON c.id = d.category_id
+        <include refid="drugCondition"/>
+        ORDER BY d.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计药品数量 -->
+    <select id="countDrugs" resultType="long">
+        SELECT COUNT(1) FROM drug d
+        <include refid="drugCondition"/>
+    </select>
+
+    <!-- 查询药品详情 -->
+    <select id="selectDrugDetailById" resultMap="DrugDetailVOMap">
+        SELECT d.id, d.drug_code, d.drug_name, d.generic_name, d.category_id, c.category_name,
+               d.specification, d.dosage_form, d.manufacturer, d.approval_no, d.price, d.stock_quantity,
+               d.warning_threshold, d.prescription_required, d.insurance_covered,
+               d.usage_instruction, d.contraindication, d.adverse_reaction, d.status, d.create_time
+        FROM drug d
+        LEFT JOIN drug_category c ON c.id = d.category_id
+        WHERE d.id = #{id} AND d.deleted = 0
+    </select>
+
+</mapper>

@@ -1,3 +1,28 @@
 spring:
   application:
     name: medical_care
+  datasource:
+    url: jdbc:mysql://localhost:13306/medical_care?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8080
+
+medical-care:
+  auth:
+    jwt-secret: ${JWT_SECRET:medical-care-phase-one-secret-change-me}
+    token-expire-hours: ${JWT_EXPIRE_HOURS:24}
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-handlers-package: com.xuenai.medical.config
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuenai.medical.mapper.DoctorMapper">
+
+    <resultMap id="DoctorVOMap" type="com.xuenai.medical.model.vo.DoctorVO">
+        <constructor>
+            <arg column="id"                javaType="Long"/>
+            <arg column="user_id"           javaType="Long"/>
+            <arg column="real_name"         javaType="String"/>
+            <arg column="phone"             javaType="String"/>
+            <arg column="avatar_url"        javaType="String"/>
+            <arg column="hospital"          javaType="String"/>
+            <arg column="department"        javaType="String"/>
+            <arg column="title"             javaType="String"/>
+            <arg column="specialty"         javaType="String"/>
+            <arg column="consultation_count" javaType="Integer"/>
+            <arg column="score"             javaType="java.math.BigDecimal"/>
+            <arg column="service_status"    javaType="Integer"/>
+            <arg column="audit_status"      javaType="String"/>
+            <arg column="create_time"       javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="DoctorDetailVOMap" type="com.xuenai.medical.model.vo.DoctorDetailVO">
+        <constructor>
+            <arg column="id"                javaType="Long"/>
+            <arg column="user_id"           javaType="Long"/>
+            <arg column="real_name"         javaType="String"/>
+            <arg column="phone"             javaType="String"/>
+            <arg column="avatar_url"        javaType="String"/>
+            <arg column="hospital"          javaType="String"/>
+            <arg column="department"        javaType="String"/>
+            <arg column="title"             javaType="String"/>
+            <arg column="license_no"        javaType="String"/>
+            <arg column="specialty"         javaType="String"/>
+            <arg column="introduction"      javaType="String"/>
+            <arg column="consultation_count" javaType="Integer"/>
+            <arg column="score"             javaType="java.math.BigDecimal"/>
+            <arg column="service_status"    javaType="Integer"/>
+            <arg column="audit_status"      javaType="String"/>
+            <arg column="create_time"       javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="doctorJoinCondition">
+        FROM doctor_profile d
+        JOIN sys_user u ON u.id = d.user_id
+        <where>
+            d.deleted = 0 AND u.deleted = 0
+            <if test="department != null and department != ''">AND d.department = #{department}</if>
+            <if test="title != null and title != ''">AND d.title = #{title}</if>
+            <if test="serviceStatus != null">AND d.service_status = #{serviceStatus}</if>
+            <if test="keyword != null and keyword != ''">
+                AND (u.real_name LIKE CONCAT('%', #{keyword}, '%')
+                  OR d.hospital LIKE CONCAT('%', #{keyword}, '%')
+                  OR d.specialty LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </sql>
+
+    <!-- 分页查询医生列表 -->
+    <select id="selectDoctorVOPage" resultMap="DoctorVOMap">
+        SELECT d.id, d.user_id, u.real_name, u.phone, u.avatar_url,
+               d.hospital, d.department, d.title, d.specialty,
+               d.consultation_count, d.score, d.service_status, d.audit_status, d.create_time
+        <include refid="doctorJoinCondition"/>
+        ORDER BY d.score DESC, d.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计医生数量 -->
+    <select id="countDoctors" resultType="long">
+        SELECT COUNT(1)
+        <include refid="doctorJoinCondition"/>
+    </select>
+
+    <!-- 查询医生详情 -->
+    <select id="selectDoctorDetailById" resultMap="DoctorDetailVOMap">
+        SELECT d.id, d.user_id, u.real_name, u.phone, u.avatar_url,
+               d.hospital, d.department, d.title, d.license_no, d.specialty, d.introduction,
+               d.consultation_count, d.score, d.service_status, d.audit_status, d.create_time
+        FROM doctor_profile d
+        JOIN sys_user u ON u.id = d.user_id
+        WHERE d.id = #{doctorId} AND d.deleted = 0 AND u.deleted = 0
+    </select>
+
+</mapper>

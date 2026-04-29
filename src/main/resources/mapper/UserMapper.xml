@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuenai.medical.mapper.UserMapper">
+
+    <resultMap id="LoginUserVOMap" type="com.xuenai.medical.model.vo.LoginUserVO">
+        <constructor>
+            <arg column="id"            javaType="Long"/>
+            <arg column="username"      javaType="String"/>
+            <arg column="password_hash" javaType="String"/>
+            <arg column="real_name"     javaType="String"/>
+            <arg column="status"        javaType="Integer"/>
+            <arg column="role_codes"    javaType="java.util.List"
+                 typeHandler="com.xuenai.medical.config.CommaSplitTypeHandler"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="UserVOMap" type="com.xuenai.medical.model.vo.UserVO">
+        <constructor>
+            <arg column="id"              javaType="Long"/>
+            <arg column="username"        javaType="String"/>
+            <arg column="real_name"       javaType="String"/>
+            <arg column="phone"           javaType="String"/>
+            <arg column="email"           javaType="String"/>
+            <arg column="status"          javaType="Integer"/>
+            <arg column="role_codes"      javaType="java.util.List"
+                 typeHandler="com.xuenai.medical.config.CommaSplitTypeHandler"/>
+            <arg column="last_login_time" javaType="java.time.LocalDateTime"/>
+            <arg column="create_time"     javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <!-- 根据用户名查询登录信息 -->
+    <select id="selectLoginUserByUsername" resultMap="LoginUserVOMap">
+        SELECT u.id, u.username, u.password_hash, u.real_name, u.status,
+               GROUP_CONCAT(r.role_code ORDER BY r.role_code SEPARATOR ',') AS role_codes
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur ON ur.user_id = u.id
+        LEFT JOIN sys_role r ON r.id = ur.role_id AND r.deleted = 0 AND r.status = 1
+        WHERE u.username = #{username} AND u.deleted = 0
+        GROUP BY u.id, u.username, u.password_hash, u.real_name, u.status
+    </select>
+
+    <!-- 根据ID查询用户VO -->
+    <select id="selectUserVOById" resultMap="UserVOMap">
+        SELECT u.id, u.username, u.real_name, u.phone, u.email, u.status,
+               u.last_login_time, u.create_time,
+               GROUP_CONCAT(r.role_code ORDER BY r.role_code SEPARATOR ',') AS role_codes
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur ON ur.user_id = u.id
+        LEFT JOIN sys_role r ON r.id = ur.role_id AND r.deleted = 0
+        WHERE u.id = #{userId} AND u.deleted = 0
+        GROUP BY u.id, u.username, u.real_name, u.phone, u.email, u.status, u.last_login_time, u.create_time
+    </select>
+
+    <!-- 分页查询用户列表 -->
+    <select id="selectUserVOPage" resultMap="UserVOMap">
+        SELECT u.id, u.username, u.real_name, u.phone, u.email, u.status,
+               u.last_login_time, u.create_time,
+               GROUP_CONCAT(r.role_code ORDER BY r.role_code SEPARATOR ',') AS role_codes
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur ON ur.user_id = u.id
+        LEFT JOIN sys_role r ON r.id = ur.role_id AND r.deleted = 0
+        <where>
+            u.deleted = 0
+            <if test="status != null">AND u.status = #{status}</if>
+            <if test="keyword != null and keyword != ''">
+                AND (u.username LIKE CONCAT('%', #{keyword}, '%')
+                  OR u.real_name LIKE CONCAT('%', #{keyword}, '%')
+                  OR u.phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="roleCode != null and roleCode != ''">
+                AND EXISTS (
+                    SELECT 1 FROM sys_user_role ur2
+                    JOIN sys_role r2 ON r2.id = ur2.role_id
+                    WHERE ur2.user_id = u.id AND r2.role_code = #{roleCode} AND r2.deleted = 0
+                )
+            </if>
+        </where>
+        GROUP BY u.id, u.username, u.real_name, u.phone, u.email, u.status, u.last_login_time, u.create_time
+        ORDER BY u.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计用户数量 -->
+    <select id="countUsers" resultType="long">
+        SELECT COUNT(DISTINCT u.id)
+        FROM sys_user u
+        <if test="roleCode != null and roleCode != ''">
+            JOIN sys_user_role ur2 ON ur2.user_id = u.id
+            JOIN sys_role r2 ON r2.id = ur2.role_id AND r2.deleted = 0
+        </if>
+        <where>
+            u.deleted = 0
+            <if test="status != null">AND u.status = #{status}</if>
+            <if test="keyword != null and keyword != ''">
+                AND (u.username LIKE CONCAT('%', #{keyword}, '%')
+                  OR u.real_name LIKE CONCAT('%', #{keyword}, '%')
+                  OR u.phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="roleCode != null and roleCode != ''">
+                AND r2.role_code = #{roleCode}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询用户角色 code 列表 -->
+    <select id="selectRoleCodesByUserId" resultType="String">
+        SELECT r.role_code
+        FROM sys_user_role ur
+        JOIN sys_role r ON r.id = ur.role_id
+        WHERE ur.user_id = #{userId} AND r.deleted = 0 AND r.status = 1
+    </select>
+
+</mapper>
