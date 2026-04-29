@@ -7,6 +7,7 @@ export interface PageResult<T> {
 
 export interface DoctorSummary {
   id: number
+  userId: number
   realName: string
   phone: string
   avatarUrl: string | null
@@ -19,6 +20,11 @@ export interface DoctorSummary {
   serviceStatus: number
   auditStatus: string
   createTime: string
+}
+
+export interface DoctorDetail extends DoctorSummary {
+  licenseNo: string | null
+  introduction: string | null
 }
 
 export interface DrugSummary {
