@@ -1,24 +1,59 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiGet } from '@/api/client'
-import type { DoctorDetail } from '@/types/api'
+import { getDoctorCardPlans, purchaseCard, getMyCards } from '@/api/consultation'
+import type { DoctorDetail, CardPlan, PrivateDoctorCard } from '@/types/api'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
 const router = useRouter()
+const auth = useAuthStore()
 const doctor = ref<DoctorDetail | null>(null)
 const loading = ref(true)
 const error = ref('')
+const plans = ref<CardPlan[]>([])
+const myCards = ref<PrivateDoctorCard[]>([])
+const purchasing = ref(false)
+
+const isPatient = computed(() => auth.user?.roles.includes('PATIENT'))
+const activeCard = computed(() => myCards.value.find(c => c.doctorId === Number(route.params.id) && c.status === 'ACTIVE'))
 
 onMounted(async () => {
   try {
-    doctor.value = await apiGet<DoctorDetail>(`/api/doctors/${route.params.id}`)
+    const doctorId = Number(route.params.id)
+    doctor.value = await apiGet<DoctorDetail>(`/api/doctors/${doctorId}`)
+    plans.value = (await getDoctorCardPlans(doctorId)).filter(p => p.status === 1)
+    if (isPatient.value) {
+      try { myCards.value = await getMyCards() } catch { /* ok */ }
+    }
   } catch (e) {
     error.value = e instanceof Error ? e.message : '加载失败'
   } finally {
     loading.value = false
   }
 })
+
+async function handlePurchase(planId: number) {
+  purchasing.value = true
+  try {
+    await purchaseCard(Number(route.params.id), planId)
+    myCards.value = await getMyCards()
+  } catch (e) {
+    alert(e instanceof Error ? e.message : '购买失败')
+  } finally {
+    purchasing.value = false
+  }
+}
+
+function goConsult() {
+  router.push({ name: 'patient-new-consultation', query: { doctorId: route.params.id as string } })
+}
+
+function cardTypeLabel(t: string) {
+  const m: Record<string, string> = { ONCE: '单次', MONTH: '月卡', QUARTER: '季卡', HALF_YEAR: '半年卡', YEAR: '年卡' }
+  return m[t] ?? t
+}
 
 function auditLabel(status: string) {
   const map: Record<string, string> = { APPROVED: '已认证', PENDING: '审核中', REJECTED: '未通过' }
@@ -90,13 +125,35 @@ function auditClass(status: string) {
         </div>
       </div>
 
-      <!-- 问诊入口 (Phase 2 占位) -->
-      <div class="action-panel">
-        <div>
-          <strong>预约问诊</strong>
-          <p>私人医生服务将在第二阶段上线，敬请期待。</p>
+      <!-- 私人医生服务 -->
+      <div v-if="isPatient" class="action-panel">
+        <div v-if="activeCard">
+          <strong>已持有服务卡：{{ activeCard.planName }}</strong>
+          <p>剩余 {{ activeCard.remainingTimes }} 次问诊 / {{ activeCard.remainingMinutes }} 分钟</p>
         </div>
-        <button class="primary-button" type="button" disabled>购买服务卡（待开放）</button>
+        <div v-else>
+          <strong>预约问诊</strong>
+          <p>购买私人医生服务卡，获得一对一在线问诊服务</p>
+        </div>
+        <button v-if="activeCard" class="primary-button" type="button" @click="goConsult">发起问诊</button>
+      </div>
+
+      <!-- 服务卡套餐列表 -->
+      <div v-if="isPatient && plans.length > 0 && !activeCard" class="plans-section">
+        <h3>可选服务卡套餐</h3>
+        <div class="plans-row">
+          <div v-for="plan in plans" :key="plan.id" class="plan-card-mini">
+            <span class="pcm-type">{{ cardTypeLabel(plan.cardType) }}</span>
+            <strong>{{ plan.planName }}</strong>
+            <div class="pcm-price">¥{{ plan.price.toFixed(2) }}</div>
+            <ul>
+              <li>{{ plan.validDays }}天 · {{ plan.consultationTimes }}次 · {{ plan.totalMinutes }}分钟</li>
+            </ul>
+            <button class="primary-button" type="button" :disabled="purchasing" @click="handlePurchase(plan.id)">
+              {{ purchasing ? '购买中...' : '立即购买' }}
+            </button>
+          </div>
+        </div>
       </div>
     </template>
   </section>
@@ -220,5 +277,46 @@ function auditClass(status: string) {
 .action-panel p {
   margin: 0;
   color: var(--muted);
+}
+
+.plans-section {
+  display: grid;
+  gap: 12px;
+}
+.plans-section h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.plans-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.plan-card-mini {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.pcm-type {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.pcm-price {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.plan-card-mini ul {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--muted);
+  font-size: 13px;
 }
 </style>

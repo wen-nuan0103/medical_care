@@ -55,3 +55,72 @@ export interface UserSummary {
   createTime: string
 }
 
+// ─── Phase 2 Types ──────────────────────────────────────
+
+export interface CardPlan {
+  id: number
+  doctorId: number
+  cardType: string
+  planName: string
+  price: number
+  validDays: number
+  consultationTimes: number
+  totalMinutes: number
+  singleMinutes: number
+  giftLimitMinutes: number
+  description: string | null
+  status: number
+}
+
+export interface PrivateDoctorCard {
+  id: number
+  doctorId: number
+  doctorName: string
+  doctorTitle: string
+  doctorAvatar: string | null
+  cardType: string
+  planName: string
+  startTime: string
+  expireTime: string
+  totalTimes: number
+  remainingTimes: number
+  totalMinutes: number
+  remainingMinutes: number
+  giftedMinutes: number
+  status: string
+}
+
+export interface ConsultationSession {
+  id: number
+  sessionNo: string
+  patientId: number
+  patientName: string
+  patientAvatar: string | null
+  doctorId: number
+  doctorName: string
+  doctorAvatar: string | null
+  chiefComplaint: string | null
+  diseaseDesc: string | null
+  status: string
+  startTime: string | null
+  endTime: string | null
+  allowedMinutes: number
+  usedMinutes: number
+  summary: string | null
+  createTime: string
+}
+
+export interface ChatMessage {
+  id: number
+  sessionId: number
+  senderId: number
+  senderName: string
+  senderAvatar: string | null
+  receiverId: number
+  messageType: string
+  content: string
+  attachmentId: number | null
+  attachmentUrl: string | null
+  readStatus: number
+  sendTime: string
+}

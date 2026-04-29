@@ -19,12 +19,15 @@ public class MenuServiceImpl implements MenuService {
         if (roles.contains("PATIENT")) {
             menus.add(new MenuItemVO("患者首页", "/patient/home", "Home", List.of()));
             menus.add(new MenuItemVO("找医生", "/patient/doctors", "UserSearch", List.of()));
+            menus.add(new MenuItemVO("我的医生", "/patient/my-cards", "CreditCard", List.of()));
+            menus.add(new MenuItemVO("问诊记录", "/patient/sessions", "MessagesSquare", List.of()));
             menus.add(new MenuItemVO("药品商城", "/patient/drugs", "Pill", List.of()));
             menus.add(new MenuItemVO("我的处方", "/patient/prescriptions", "FileText", List.of()));
         }
         if (roles.contains("DOCTOR")) {
             menus.add(new MenuItemVO("医生工作台", "/doctor/workbench", "BriefcaseMedical", List.of()));
             menus.add(new MenuItemVO("问诊列表", "/doctor/sessions", "MessagesSquare", List.of()));
+            menus.add(new MenuItemVO("服务卡管理", "/doctor/card-plans", "CreditCard", List.of()));
             menus.add(new MenuItemVO("我的患者", "/doctor/patients", "Users", List.of()));
         }
         if (roles.contains("PHARMACIST")) {

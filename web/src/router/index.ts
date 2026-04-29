@@ -7,6 +7,11 @@ import DoctorsView from '@/views/DoctorsView.vue'
 import DoctorDetailView from '@/views/DoctorDetailView.vue'
 import DrugsView from '@/views/DrugsView.vue'
 import UsersView from '@/views/UsersView.vue'
+import MyCardsView from '@/views/MyCardsView.vue'
+import SessionListView from '@/views/SessionListView.vue'
+import ChatView from '@/views/ChatView.vue'
+import NewConsultationView from '@/views/NewConsultationView.vue'
+import DoctorCardPlansView from '@/views/DoctorCardPlansView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +55,21 @@ const router = createRouter({
       component: DashboardView,
       props: { role: 'PATIENT' },
     },
+    {
+      path: '/patient/my-cards',
+      name: 'patient-my-cards',
+      component: MyCardsView,
+    },
+    {
+      path: '/patient/sessions',
+      name: 'patient-sessions',
+      component: SessionListView,
+    },
+    {
+      path: '/patient/new-consultation',
+      name: 'patient-new-consultation',
+      component: NewConsultationView,
+    },
 
     // ─── 医生端 ─────────────────────────────────────────
     {
@@ -61,14 +81,25 @@ const router = createRouter({
     {
       path: '/doctor/sessions',
       name: 'doctor-sessions',
-      component: DashboardView,
-      props: { role: 'DOCTOR' },
+      component: SessionListView,
     },
     {
       path: '/doctor/patients',
       name: 'doctor-patients',
       component: DashboardView,
       props: { role: 'DOCTOR' },
+    },
+    {
+      path: '/doctor/card-plans',
+      name: 'doctor-card-plans',
+      component: DoctorCardPlansView,
+    },
+
+    // ─── 聊天页面（共用） ──────────────────────────────
+    {
+      path: '/chat/:sessionId',
+      name: 'chat',
+      component: ChatView,
     },
 
     // ─── 药剂师端 ────────────────────────────────────────
