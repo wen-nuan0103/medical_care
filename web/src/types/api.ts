@@ -124,3 +124,112 @@ export interface ChatMessage {
   readStatus: number
   sendTime: string
 }
+
+export interface PrescriptionItem {
+  id: number
+  prescriptionId: number
+  drugId: number
+  drugName: string
+  specification: string | null
+  quantity: number
+  unitPrice: number
+  dosage: string
+  frequency: string
+  durationDays: number
+  usageMethod: string
+  medicationTime: string | null
+  remark: string | null
+  currentStock: number | null
+  warningThreshold: number | null
+  prescriptionRequired: number | null
+  insuranceCovered: number | null
+  stockStatus: string | null
+}
+
+export interface PrescriptionAudit {
+  id: number
+  prescriptionId: number
+  pharmacistId: number
+  pharmacistName: string | null
+  auditResult: string
+  riskLevel: string | null
+  interactionResult: string | null
+  stockResult: string | null
+  dosageResult: string | null
+  advice: string | null
+  auditTime: string
+}
+
+export interface Prescription {
+  id: number
+  prescriptionNo: string
+  sessionId: number
+  patientId: number
+  patientName: string | null
+  doctorId: number
+  doctorName: string | null
+  diagnosis: string
+  status: string
+  validUntil: string | null
+  doctorNote: string | null
+  patientInstruction: string | null
+  submitTime: string | null
+  approveTime: string | null
+  expireTime: string | null
+  createTime: string
+  totalAmount: number
+  items: PrescriptionItem[]
+  latestAudit: PrescriptionAudit | null
+}
+
+export interface PrescriptionItemPayload {
+  drugId: number
+  quantity: number
+  dosage: string
+  frequency: string
+  durationDays: number
+  usageMethod: string
+  medicationTime?: string
+  remark?: string
+}
+
+export interface PrescriptionSavePayload {
+  sessionId: number
+  diagnosis: string
+  doctorNote?: string
+  patientInstruction?: string
+  submit?: boolean
+  items: PrescriptionItemPayload[]
+}
+
+export interface PrescriptionStockWarning {
+  drugId: number
+  drugName: string
+  requestedQuantity: number
+  currentStock: number
+  warningThreshold: number
+  stockEnough: boolean
+  warningMessage: string
+}
+
+export interface DrugInteractionRisk {
+  ruleId: number
+  drugAId: number
+  drugAName: string
+  drugBId: number
+  drugBName: string
+  riskLevel: string
+  description: string
+  suggestion: string | null
+}
+
+export interface PrescriptionAuditCheck {
+  prescriptionId: number
+  riskLevel: string
+  stockResult: string
+  interactionResult: string
+  dosageResult: string
+  summary: string
+  stockWarnings: PrescriptionStockWarning[]
+  interactionRisks: DrugInteractionRisk[]
+}

@@ -12,6 +12,9 @@ import SessionListView from '@/views/SessionListView.vue'
 import ChatView from '@/views/ChatView.vue'
 import NewConsultationView from '@/views/NewConsultationView.vue'
 import DoctorCardPlansView from '@/views/DoctorCardPlansView.vue'
+import PrescriptionListView from '@/views/PrescriptionListView.vue'
+import PrescriptionEditorView from '@/views/PrescriptionEditorView.vue'
+import PharmacistAuditView from '@/views/PharmacistAuditView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,7 +30,6 @@ const router = createRouter({
       meta: { public: true },
     },
 
-    // ─── 患者端 ─────────────────────────────────────────
     {
       path: '/patient/home',
       name: 'patient-home',
@@ -52,8 +54,8 @@ const router = createRouter({
     {
       path: '/patient/prescriptions',
       name: 'patient-prescriptions',
-      component: DashboardView,
-      props: { role: 'PATIENT' },
+      component: PrescriptionListView,
+      props: { mode: 'patient' },
     },
     {
       path: '/patient/my-cards',
@@ -71,7 +73,6 @@ const router = createRouter({
       component: NewConsultationView,
     },
 
-    // ─── 医生端 ─────────────────────────────────────────
     {
       path: '/doctor/workbench',
       name: 'doctor-workbench',
@@ -94,15 +95,24 @@ const router = createRouter({
       name: 'doctor-card-plans',
       component: DoctorCardPlansView,
     },
+    {
+      path: '/doctor/prescriptions',
+      name: 'doctor-prescriptions',
+      component: PrescriptionListView,
+      props: { mode: 'doctor' },
+    },
+    {
+      path: '/doctor/prescriptions/new/:sessionId',
+      name: 'doctor-prescription-new',
+      component: PrescriptionEditorView,
+    },
 
-    // ─── 聊天页面（共用） ──────────────────────────────
     {
       path: '/chat/:sessionId',
       name: 'chat',
       component: ChatView,
     },
 
-    // ─── 药剂师端 ────────────────────────────────────────
     {
       path: '/pharmacist/workbench',
       name: 'pharmacist-workbench',
@@ -112,8 +122,7 @@ const router = createRouter({
     {
       path: '/pharmacist/audits',
       name: 'pharmacist-audits',
-      component: DashboardView,
-      props: { role: 'PHARMACIST' },
+      component: PharmacistAuditView,
     },
     {
       path: '/pharmacist/drugs',
@@ -122,7 +131,6 @@ const router = createRouter({
       props: { manage: true },
     },
 
-    // ─── 管理后台 ────────────────────────────────────────
     {
       path: '/admin/dashboard',
       name: 'admin-dashboard',

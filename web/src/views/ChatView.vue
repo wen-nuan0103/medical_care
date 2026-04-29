@@ -139,6 +139,11 @@ async function handleEnd() {
 
 // 赠送时长
 const showGift = ref(false)
+
+function openPrescriptionEditor() {
+  router.push({ name: 'doctor-prescription-new', params: { sessionId } })
+}
+
 const giftMin = ref(10)
 const giftReason = ref('')
 async function handleGift() {
@@ -178,6 +183,7 @@ function formatTime(s: string | null) {
           <span>{{ session.usedMinutes }}/{{ session.allowedMinutes }} 分钟</span>
         </div>
         <div class="topbar-actions">
+          <button v-if="isDoctor && !isEnded" class="primary-button" type="button" @click="openPrescriptionEditor">开处方</button>
           <button v-if="isDoctor && !isEnded" class="ghost-button" type="button" @click="showGift = true">赠送时长</button>
           <button v-if="!isEnded" class="ghost-button danger-text" type="button" @click="handleEnd">结束问诊</button>
         </div>

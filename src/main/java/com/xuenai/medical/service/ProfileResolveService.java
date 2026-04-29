@@ -29,6 +29,14 @@ public interface ProfileResolveService {
     Long getPatientProfileId(Long userId);
 
     /**
+     * 根据 sys_user.id 获取 pharmacist_profile.id
+     *
+     * @param userId 用户ID
+     * @return 药剂师档案ID
+     */
+    Long getPharmacistProfileId(Long userId);
+
+    /**
      * 根据 doctor_profile.id 获取 sys_user.id
      */
     Long getUserIdByDoctorProfileId(Long doctorProfileId);

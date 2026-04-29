@@ -10,6 +10,14 @@ const authStore = useAuthStore()
 const featuredDoctors = ref<DoctorSummary[]>([])
 const loading = ref(true)
 
+interface QuickEntry {
+  label: string
+  desc: string
+  path: string
+  emoji: string
+  soon?: boolean
+}
+
 onMounted(async () => {
   await authStore.hydrate()
   try {
@@ -24,12 +32,12 @@ onMounted(async () => {
   }
 })
 
-const quickEntries = [
+const quickEntries: QuickEntry[] = [
   { label: '找医生', desc: '浏览全部医生，按科室和专长筛选', path: '/patient/doctors', emoji: '🩺' },
   { label: '我的医生', desc: '查看已购买的私人医生服务卡', path: '/patient/my-cards', emoji: '💳' },
   { label: '问诊记录', desc: '查看问诊会话和聊天历史', path: '/patient/sessions', emoji: '💬' },
   { label: '药品商城', desc: '查看药品、价格和医保属性', path: '/patient/drugs', emoji: '💊' },
-  { label: '我的处方', desc: '查看处方记录和审核状态', path: '/patient/prescriptions', emoji: '📋', soon: true },
+  { label: '我的处方', desc: '查看处方记录和审核状态', path: '/patient/prescriptions', emoji: '📋' },
 ]
 </script>
 

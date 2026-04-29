@@ -21,14 +21,14 @@ const roleConfig: Record<RoleKey, { title: string; subtitle: string; entries: { 
     entries: [
       { label: '找医生', path: '/patient/doctors', desc: '浏览全部医生，按科室和专长筛选' },
       { label: '药品商城', path: '/patient/drugs', desc: '查看药品、价格和医保属性' },
-      { label: '我的处方', path: '/patient/prescriptions', desc: '查看处方记录和审核状态', soon: true },
+      { label: '我的处方', path: '/patient/prescriptions', desc: '查看处方记录和审核状态' },
     ],
   },
   DOCTOR: {
     title: '医生工作台',
     subtitle: '处理在线问诊、患者资料和处方草稿。',
     entries: [
-      { label: '问诊列表', path: '/doctor/sessions', desc: '查看当前和历史问诊会话', soon: true },
+      { label: '问诊列表', path: '/doctor/sessions', desc: '查看当前和历史问诊会话' },
       { label: '我的患者', path: '/doctor/patients', desc: '管理患者资料和随访记录', soon: true },
     ],
   },
@@ -36,7 +36,7 @@ const roleConfig: Record<RoleKey, { title: string; subtitle: string; entries: { 
     title: '药剂师工作台',
     subtitle: '审核处方、维护药品库和关注库存预警。',
     entries: [
-      { label: '处方审核', path: '/pharmacist/audits', desc: '处理待审核处方', soon: true },
+      { label: '处方审核', path: '/pharmacist/audits', desc: '处理待审核处方' },
       { label: '药品管理', path: '/pharmacist/drugs', desc: '维护药品信息和库存' },
     ],
   },
