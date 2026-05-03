@@ -22,6 +22,8 @@ const roleConfig: Record<RoleKey, { title: string; subtitle: string; entries: { 
       { label: '找医生', path: '/patient/doctors', desc: '浏览全部医生，按科室和专长筛选' },
       { label: '药品商城', path: '/patient/drugs', desc: '查看药品、价格和医保属性' },
       { label: '我的处方', path: '/patient/prescriptions', desc: '查看处方记录和审核状态' },
+      { label: '医保卡', path: '/patient/insurance-card', desc: '绑定模拟医保卡并查看余额' },
+      { label: '购药订单', path: '/patient/orders', desc: '查看医保购药订单和支付记录' },
     ],
   },
   DOCTOR: {

@@ -233,3 +233,70 @@ export interface PrescriptionAuditCheck {
   stockWarnings: PrescriptionStockWarning[]
   interactionRisks: DrugInteractionRisk[]
 }
+
+export interface InsuranceCard {
+  id: number
+  patientId: number
+  cardNo: string
+  holderName: string
+  holderIdCard: string | null
+  balance: number
+  reimbursementRate: number
+  status: string
+  bindTime: string
+}
+
+export interface InsuranceCardBindPayload {
+  cardNo: string
+  holderName: string
+  holderIdCard?: string
+  balance: number
+  reimbursementRate?: number
+}
+
+export interface MedicineOrderItem {
+  id: number
+  orderId: number
+  drugId: number
+  drugName: string
+  specification: string | null
+  quantity: number
+  unitPrice: number
+  amount: number
+  insuranceCovered: number
+  insuranceAmount: number
+}
+
+export interface InsurancePaymentRecord {
+  id: number
+  paymentNo: string
+  orderId: number
+  patientId: number
+  insuranceCardId: number
+  beforeBalance: number
+  paidAmount: number
+  afterBalance: number
+  status: string
+  failReason: string | null
+  payTime: string
+}
+
+export interface MedicineOrder {
+  id: number
+  orderNo: string
+  patientId: number
+  prescriptionId: number
+  prescriptionNo: string | null
+  diagnosis: string | null
+  insuranceCardId: number
+  insuranceCardNo: string | null
+  totalAmount: number
+  insuranceAmount: number
+  selfAmount: number
+  status: string
+  payTime: string | null
+  cancelTime: string | null
+  createTime: string
+  items: MedicineOrderItem[]
+  paymentRecord: InsurancePaymentRecord | null
+}

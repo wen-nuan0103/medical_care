@@ -38,6 +38,8 @@ const quickEntries: QuickEntry[] = [
   { label: '问诊记录', desc: '查看问诊会话和聊天历史', path: '/patient/sessions', emoji: '💬' },
   { label: '药品商城', desc: '查看药品、价格和医保属性', path: '/patient/drugs', emoji: '💊' },
   { label: '我的处方', desc: '查看处方记录和审核状态', path: '/patient/prescriptions', emoji: '📋' },
+  { label: '医保卡', desc: '绑定模拟医保卡并查看余额', path: '/patient/insurance-card', emoji: '💳' },
+  { label: '购药订单', desc: '查看医保购药订单和支付记录', path: '/patient/orders', emoji: '🧾' },
 ]
 </script>
 

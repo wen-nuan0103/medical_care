@@ -191,6 +191,14 @@ function formatTime(value: string | null) {
 
           <div class="detail-actions">
             <button
+              v-if="!isDoctor && current.status === 'APPROVED'"
+              class="primary-button"
+              type="button"
+              @click="router.push(`/patient/prescriptions/${current.id}/purchase`)"
+            >
+              Purchase medicine
+            </button>
+            <button
               v-if="isDoctor && ['DRAFT', 'REJECTED', 'NEED_MODIFY'].includes(current.status)"
               class="primary-button"
               type="button"

@@ -15,6 +15,9 @@ import DoctorCardPlansView from '@/views/DoctorCardPlansView.vue'
 import PrescriptionListView from '@/views/PrescriptionListView.vue'
 import PrescriptionEditorView from '@/views/PrescriptionEditorView.vue'
 import PharmacistAuditView from '@/views/PharmacistAuditView.vue'
+import InsuranceCardsView from '@/views/InsuranceCardsView.vue'
+import PrescriptionPurchaseView from '@/views/PrescriptionPurchaseView.vue'
+import MedicineOrdersView from '@/views/MedicineOrdersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +59,21 @@ const router = createRouter({
       name: 'patient-prescriptions',
       component: PrescriptionListView,
       props: { mode: 'patient' },
+    },
+    {
+      path: '/patient/prescriptions/:id/purchase',
+      name: 'patient-prescription-purchase',
+      component: PrescriptionPurchaseView,
+    },
+    {
+      path: '/patient/orders',
+      name: 'patient-orders',
+      component: MedicineOrdersView,
+    },
+    {
+      path: '/patient/insurance-card',
+      name: 'patient-insurance-card',
+      component: InsuranceCardsView,
     },
     {
       path: '/patient/my-cards',
