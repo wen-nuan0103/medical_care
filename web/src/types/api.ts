@@ -300,3 +300,121 @@ export interface MedicineOrder {
   items: MedicineOrderItem[]
   paymentRecord: InsurancePaymentRecord | null
 }
+
+export interface MedicationReminder {
+  id: number
+  planId: number
+  patientId: number
+  drugId: number
+  drugName: string | null
+  dosage: string | null
+  usageMethod: string | null
+  aiReminderText: string | null
+  remindTime: string
+  status: string
+  confirmTime: string | null
+  snoozeTime: string | null
+  feedback: string | null
+  createTime: string
+}
+
+export interface MedicationPlan {
+  id: number
+  patientId: number
+  prescriptionId: number
+  prescriptionItemId: number
+  drugId: number
+  drugName: string
+  startDate: string
+  endDate: string
+  timesPerDay: number
+  reminderTimes: string
+  dosage: string | null
+  usageMethod: string | null
+  aiReminderText: string | null
+  status: string
+  createTime: string
+  reminders: MedicationReminder[]
+}
+
+export interface HealthTrackRecord {
+  id: number
+  patientId: number
+  patientName: string | null
+  doctorId: number | null
+  doctorName: string | null
+  recordDate: string
+  symptom: string | null
+  temperature: number | null
+  systolicPressure: number | null
+  diastolicPressure: number | null
+  heartRate: number | null
+  bloodGlucose: number | null
+  medicationFeedback: string | null
+  abnormalFlag: number
+  aiAnalysisId: number | null
+  aiAnalysisText: string | null
+  createTime: string
+  remark: string | null
+}
+
+export interface HealthTrackPayload {
+  doctorId?: number
+  recordDate?: string
+  symptom?: string
+  temperature?: number | null
+  systolicPressure?: number | null
+  diastolicPressure?: number | null
+  heartRate?: number | null
+  bloodGlucose?: number | null
+  medicationFeedback?: string
+  remark?: string
+}
+
+export interface PatientCare {
+  patientId: number
+  userId: number
+  patientName: string | null
+  phone: string | null
+  latestSymptom: string | null
+  latestRecordDate: string | null
+  abnormalRecordCount: number
+  activeMedicationPlanCount: number
+  pendingFollowUpCount: number
+}
+
+export interface FollowUpPlan {
+  id: number
+  patientId: number
+  patientName: string | null
+  doctorId: number
+  doctorName: string | null
+  sessionId: number | null
+  planTime: string
+  content: string
+  status: string
+  finishTime: string | null
+  createTime: string
+  remark: string | null
+}
+
+export interface FollowUpPayload {
+  patientId: number
+  sessionId?: number | null
+  planTime: string
+  content: string
+  remark?: string
+}
+
+export interface SystemNotification {
+  id: number
+  receiverId: number
+  senderId: number | null
+  title: string
+  content: string
+  notificationType: string
+  businessId: number | null
+  readStatus: number
+  readTime: string | null
+  createTime: string
+}

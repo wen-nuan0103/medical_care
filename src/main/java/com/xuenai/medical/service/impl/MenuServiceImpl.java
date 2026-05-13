@@ -7,9 +7,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 菜单 Service 实现
- */
 @Service
 public class MenuServiceImpl implements MenuService {
 
@@ -25,6 +22,9 @@ public class MenuServiceImpl implements MenuService {
             menus.add(new MenuItemVO("我的处方", "/patient/prescriptions", "FileText", List.of()));
             menus.add(new MenuItemVO("医保卡", "/patient/insurance-card", "CreditCard", List.of()));
             menus.add(new MenuItemVO("购药订单", "/patient/orders", "ReceiptText", List.of()));
+            menus.add(new MenuItemVO("用药提醒", "/patient/medication-reminders", "BellRing", List.of()));
+            menus.add(new MenuItemVO("健康跟踪", "/patient/health-tracks", "Activity", List.of()));
+            menus.add(new MenuItemVO("站内通知", "/notifications", "Bell", List.of()));
         }
         if (roles.contains("DOCTOR")) {
             menus.add(new MenuItemVO("医生工作台", "/doctor/workbench", "BriefcaseMedical", List.of()));
@@ -32,17 +32,20 @@ public class MenuServiceImpl implements MenuService {
             menus.add(new MenuItemVO("服务卡管理", "/doctor/card-plans", "CreditCard", List.of()));
             menus.add(new MenuItemVO("我的处方", "/doctor/prescriptions", "FileText", List.of()));
             menus.add(new MenuItemVO("我的患者", "/doctor/patients", "Users", List.of()));
+            menus.add(new MenuItemVO("站内通知", "/notifications", "Bell", List.of()));
         }
         if (roles.contains("PHARMACIST")) {
             menus.add(new MenuItemVO("药师工作台", "/pharmacist/workbench", "ClipboardCheck", List.of()));
             menus.add(new MenuItemVO("处方审核", "/pharmacist/audits", "FileCheck", List.of()));
             menus.add(new MenuItemVO("药品管理", "/pharmacist/drugs", "Pill", List.of()));
+            menus.add(new MenuItemVO("站内通知", "/notifications", "Bell", List.of()));
         }
         if (roles.contains("ADMIN")) {
             menus.add(new MenuItemVO("管理看板", "/admin/dashboard", "LayoutDashboard", List.of()));
             menus.add(new MenuItemVO("用户管理", "/admin/users", "Users", List.of()));
             menus.add(new MenuItemVO("医生管理", "/admin/doctors", "Stethoscope", List.of()));
             menus.add(new MenuItemVO("药品管理", "/admin/drugs", "Pill", List.of()));
+            menus.add(new MenuItemVO("站内通知", "/notifications", "Bell", List.of()));
         }
         return menus;
     }

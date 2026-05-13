@@ -24,6 +24,8 @@ const roleConfig: Record<RoleKey, { title: string; subtitle: string; entries: { 
       { label: '我的处方', path: '/patient/prescriptions', desc: '查看处方记录和审核状态' },
       { label: '医保卡', path: '/patient/insurance-card', desc: '绑定模拟医保卡并查看余额' },
       { label: '购药订单', path: '/patient/orders', desc: '查看医保购药订单和支付记录' },
+      { label: '用药提醒', path: '/patient/medication-reminders', desc: '查看用药计划并确认提醒' },
+      { label: '健康跟踪', path: '/patient/health-tracks', desc: '记录症状、指标和用药反馈' },
     ],
   },
   DOCTOR: {
@@ -31,7 +33,7 @@ const roleConfig: Record<RoleKey, { title: string; subtitle: string; entries: { 
     subtitle: '处理在线问诊、患者资料和处方草稿。',
     entries: [
       { label: '问诊列表', path: '/doctor/sessions', desc: '查看当前和历史问诊会话' },
-      { label: '我的患者', path: '/doctor/patients', desc: '管理患者资料和随访记录', soon: true },
+      { label: '我的患者', path: '/doctor/patients', desc: '管理患者资料和随访记录' },
     ],
   },
   PHARMACIST: {
@@ -94,8 +96,8 @@ onMounted(async () => {
     <!-- 其他角色：阶段提示 -->
     <template v-else>
       <div class="phase-hint">
-        <span class="phase-badge">第一阶段</span>
-        <p>当前为基础平台阶段，问诊、购卡和处方功能将在后续阶段上线。</p>
+        <span class="phase-badge">第五阶段</span>
+        <p>当前已接入问诊、处方、医保购药、用药提醒、健康跟踪和随访模块。</p>
       </div>
     </template>
 

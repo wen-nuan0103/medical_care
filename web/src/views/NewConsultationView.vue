@@ -37,6 +37,10 @@ onMounted(async () => {
 
 async function handleSubmit() {
   if (submitting.value) return
+  if (!chiefComplaint.value.trim()) {
+    error.value = '请填写主诉信息'
+    return
+  }
   submitting.value = true
   error.value = ''
   try {

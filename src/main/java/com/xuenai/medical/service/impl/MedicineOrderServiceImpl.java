@@ -30,6 +30,7 @@ import com.xuenai.medical.model.vo.MedicineOrderItemVO;
 import com.xuenai.medical.model.vo.MedicineOrderVO;
 import com.xuenai.medical.model.vo.PrescriptionVO;
 import com.xuenai.medical.service.MedicineOrderService;
+import com.xuenai.medical.service.MedicationReminderService;
 import com.xuenai.medical.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -68,6 +69,7 @@ public class MedicineOrderServiceImpl implements MedicineOrderService {
     private final DrugMapper drugMapper;
     private final DrugStockRecordMapper drugStockRecordMapper;
     private final PrescriptionService prescriptionService;
+    private final MedicationReminderService medicationReminderService;
 
     @Override
     @Transactional(readOnly = true)
@@ -203,6 +205,7 @@ public class MedicineOrderServiceImpl implements MedicineOrderService {
         payment.setCreateBy(UserContext.getUserId());
         payment.setUpdateBy(UserContext.getUserId());
         insurancePaymentRecordMapper.insert(payment);
+        medicationReminderService.generateFromPaidOrder(order);
         return buildVO(order.getId());
     }
 

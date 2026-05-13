@@ -26,19 +26,29 @@ async function load() {
     records.value = isDoctor.value
       ? await getDoctorPrescriptions(status.value || undefined)
       : await getPatientPrescriptions(status.value || undefined)
+  } catch {
+    records.value = []
   } finally {
     loading.value = false
   }
 }
 
 async function pick(item: Prescription) {
-  current.value = await getPrescriptionDetail(item.id)
+  try {
+    current.value = await getPrescriptionDetail(item.id)
+  } catch (error) {
+    alert(error instanceof Error ? error.message : '加载处方详情失败')
+  }
 }
 
 async function submit(item: Prescription) {
   if (!confirm('是否提交此处方供药剂师审核？')) return
-  current.value = await submitPrescription(item.id)
-  await load()
+  try {
+    current.value = await submitPrescription(item.id)
+    await load()
+  } catch (error) {
+    alert(error instanceof Error ? error.message : '提交失败')
+  }
 }
 
 function statusLabel(value: string) {
@@ -196,7 +206,7 @@ function formatTime(value: string | null) {
               type="button"
               @click="router.push(`/patient/prescriptions/${current.id}/purchase`)"
             >
-              Purchase medicine
+              购买药品
             </button>
             <button
               v-if="isDoctor && ['DRAFT', 'REJECTED', 'NEED_MODIFY'].includes(current.status)"

@@ -67,6 +67,14 @@ function openEdit(plan: CardPlan) {
 
 async function handleSave() {
   if (saving.value) return
+  if (!form.value.planName.trim()) {
+    error.value = '请填写套餐名称'
+    return
+  }
+  if (form.value.price <= 0) {
+    error.value = '价格必须大于 0'
+    return
+  }
   saving.value = true
   error.value = ''
   try {

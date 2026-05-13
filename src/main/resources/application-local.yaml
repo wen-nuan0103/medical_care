@@ -1,0 +1,8 @@
+spring:
+  ai:
+    openai:
+      base-url: https://jeniya.top/v1
+      api-key: sk-5D4BFoxqWarmuDiJTWza6Oupf6T2u8ZShaaYq6Bnz5P9DTMe
+      chat:
+        options:
+          model: gpt-5.2-pro

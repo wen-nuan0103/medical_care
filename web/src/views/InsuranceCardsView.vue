@@ -20,6 +20,8 @@ async function loadCards() {
   loading.value = true
   try {
     cards.value = await getInsuranceCards()
+  } catch {
+    cards.value = []
   } finally {
     loading.value = false
   }
@@ -27,7 +29,7 @@ async function loadCards() {
 
 async function submit() {
   if (!form.value.cardNo || !form.value.holderName) {
-    alert('Please enter card number and holder name.')
+    alert('请输入卡号和持卡人姓名。')
     return
   }
   saving.value = true
@@ -40,10 +42,15 @@ async function submit() {
     form.value.reimbursementRate = 0.7
     await loadCards()
   } catch (error) {
-    alert(error instanceof Error ? error.message : 'Save failed')
+    alert(error instanceof Error ? error.message : '保存失败')
   } finally {
     saving.value = false
   }
+}
+
+function statusLabel(status: string) {
+  const m: Record<string, string> = { ACTIVE: '正常', FROZEN: '已冻结', CANCELED: '已注销' }
+  return m[status] ?? status
 }
 
 function statusClass(status: string) {
@@ -61,52 +68,52 @@ function formatTime(value: string | null) {
   <section class="page">
     <div class="page-header">
       <div>
-        <h1>Insurance Cards</h1>
-        <p>Bind a mock insurance card and use it for online medicine orders.</p>
+        <h1>医保卡</h1>
+        <p>绑定模拟医保卡，用于在线购药结算。</p>
       </div>
-      <button class="primary-button" type="button" @click="loadCards">Refresh</button>
+      <button class="primary-button" type="button" @click="loadCards">刷新</button>
     </div>
 
     <div class="card-layout">
       <div class="work-panel form-panel">
-        <h2>Bind card</h2>
+        <h2>绑定医保卡</h2>
         <label>
-          Card number
+          卡号
           <input v-model="form.cardNo" placeholder="MC-202604-0001" />
         </label>
         <label>
-          Holder name
-          <input v-model="form.holderName" placeholder="Patient name" />
+          持卡人姓名
+          <input v-model="form.holderName" placeholder="请输入姓名" />
         </label>
         <label>
-          ID card
-          <input v-model="form.holderIdCard" placeholder="Optional" />
+          身份证号
+          <input v-model="form.holderIdCard" placeholder="选填" />
         </label>
         <label>
-          Balance
+          余额
           <input v-model.number="form.balance" type="number" min="0" step="0.01" />
         </label>
         <label>
-          Reimbursement rate
+          报销比例
           <input v-model.number="form.reimbursementRate" type="number" min="0" max="1" step="0.01" />
         </label>
-        <button class="primary-button" type="button" :disabled="saving" @click="submit">Bind</button>
+        <button class="primary-button" type="button" :disabled="saving" @click="submit">绑定</button>
       </div>
 
       <div class="card-list">
-        <div v-if="loading" class="empty-text">Loading...</div>
-        <div v-else-if="cards.length === 0" class="empty-text">No insurance cards yet.</div>
+        <div v-if="loading" class="empty-text">加载中...</div>
+        <div v-else-if="cards.length === 0" class="empty-text">暂无医保卡记录。</div>
         <template v-else>
           <article v-for="card in cards" :key="card.id" class="data-card insurance-card">
             <div class="card-topline">
               <strong>{{ card.cardNo }}</strong>
-              <span :class="['status-pill', statusClass(card.status)]">{{ card.status }}</span>
+              <span :class="['status-pill', statusClass(card.status)]">{{ statusLabel(card.status) }}</span>
             </div>
             <p>{{ card.holderName }}</p>
             <div class="card-metrics">
-              <span>Balance <strong>¥{{ card.balance }}</strong></span>
-              <span>Rate <strong>{{ Math.round(card.reimbursementRate * 100) }}%</strong></span>
-              <span>Bind time <strong>{{ formatTime(card.bindTime) }}</strong></span>
+              <span>余额 <strong>¥{{ card.balance }}</strong></span>
+              <span>报销比例 <strong>{{ Math.round(card.reimbursementRate * 100) }}%</strong></span>
+              <span>绑定时间 <strong>{{ formatTime(card.bindTime) }}</strong></span>
             </div>
           </article>
         </template>

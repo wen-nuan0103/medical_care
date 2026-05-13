@@ -18,6 +18,10 @@ import PharmacistAuditView from '@/views/PharmacistAuditView.vue'
 import InsuranceCardsView from '@/views/InsuranceCardsView.vue'
 import PrescriptionPurchaseView from '@/views/PrescriptionPurchaseView.vue'
 import MedicineOrdersView from '@/views/MedicineOrdersView.vue'
+import MedicationRemindersView from '@/views/MedicationRemindersView.vue'
+import HealthTracksView from '@/views/HealthTracksView.vue'
+import DoctorPatientsView from '@/views/DoctorPatientsView.vue'
+import NotificationsView from '@/views/NotificationsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,6 +75,16 @@ const router = createRouter({
       component: MedicineOrdersView,
     },
     {
+      path: '/patient/medication-reminders',
+      name: 'patient-medication-reminders',
+      component: MedicationRemindersView,
+    },
+    {
+      path: '/patient/health-tracks',
+      name: 'patient-health-tracks',
+      component: HealthTracksView,
+    },
+    {
       path: '/patient/insurance-card',
       name: 'patient-insurance-card',
       component: InsuranceCardsView,
@@ -105,8 +119,7 @@ const router = createRouter({
     {
       path: '/doctor/patients',
       name: 'doctor-patients',
-      component: DashboardView,
-      props: { role: 'DOCTOR' },
+      component: DoctorPatientsView,
     },
     {
       path: '/doctor/card-plans',
@@ -129,6 +142,11 @@ const router = createRouter({
       path: '/chat/:sessionId',
       name: 'chat',
       component: ChatView,
+    },
+    {
+      path: '/notifications',
+      name: 'notifications',
+      component: NotificationsView,
     },
 
     {

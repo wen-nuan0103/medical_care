@@ -33,7 +33,7 @@ onMounted(async () => {
 
 async function createOrder() {
   if (!selectedCardId.value) {
-    alert('Please select an active insurance card.')
+    alert('请选择一张有效的医保卡。')
     return
   }
   creating.value = true
@@ -41,7 +41,7 @@ async function createOrder() {
     await createMedicineOrder(prescriptionId, Number(selectedCardId.value))
     router.push('/patient/orders')
   } catch (error) {
-    alert(error instanceof Error ? error.message : 'Create order failed')
+    alert(error instanceof Error ? error.message : '创建订单失败')
   } finally {
     creating.value = false
   }
@@ -56,32 +56,32 @@ function formatTime(value: string | null) {
   <section class="page">
     <div class="page-header">
       <div>
-        <h1>Prescription Purchase</h1>
-        <p>Create a medicine order from an approved prescription.</p>
+        <h1>处方购药</h1>
+        <p>使用已审核通过的处方创建购药订单。</p>
       </div>
-      <button class="ghost-button" type="button" @click="router.back()">Back</button>
+      <button class="ghost-button" type="button" @click="router.back()">← 返回</button>
     </div>
 
-    <div v-if="loading" class="empty-text">Loading...</div>
+    <div v-if="loading" class="empty-text">加载中...</div>
     <template v-else-if="prescription">
       <div class="purchase-grid">
         <div class="work-panel">
           <h2>{{ prescription.diagnosis }}</h2>
           <p class="muted-text">{{ prescription.prescriptionNo }}</p>
           <div class="info-grid">
-            <span>Doctor: {{ prescription.doctorName || '-' }}</span>
-            <span>Valid until: {{ formatTime(prescription.validUntil) }}</span>
-            <span>Total: ¥{{ prescription.totalAmount }}</span>
+            <span>医生：{{ prescription.doctorName || '-' }}</span>
+            <span>有效期至：{{ formatTime(prescription.validUntil) }}</span>
+            <span>总金额：¥{{ prescription.totalAmount }}</span>
           </div>
 
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Medicine</th>
-                  <th>Qty</th>
-                  <th>Usage</th>
-                  <th>Stock</th>
+                  <th>药品</th>
+                  <th>数量</th>
+                  <th>用法</th>
+                  <th>库存</th>
                 </tr>
               </thead>
               <tbody>
@@ -100,23 +100,23 @@ function formatTime(value: string | null) {
         </div>
 
         <div class="work-panel card-picker">
-          <h2>Insurance card</h2>
+          <h2>选择医保卡</h2>
           <div v-if="activeCards.length === 0" class="empty-text">
-            No active insurance card.
+            暂无有效医保卡。
           </div>
           <label v-else>
-            Select card
+            选择卡片
             <select v-model="selectedCardId">
               <option v-for="card in activeCards" :key="card.id" :value="card.id">
-                {{ card.cardNo }} / Balance ¥{{ card.balance }}
+                {{ card.cardNo }} / 余额 ¥{{ card.balance }}
               </option>
             </select>
           </label>
           <button class="primary-button" type="button" :disabled="creating || !selectedCardId" @click="createOrder">
-            Create order
+            创建订单
           </button>
           <button class="ghost-button" type="button" @click="router.push('/patient/insurance-card')">
-            Manage cards
+            管理医保卡
           </button>
         </div>
       </div>

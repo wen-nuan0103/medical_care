@@ -21,7 +21,7 @@ function logout() {
         <span class="brand-mark">悦</span>
         <div>
           <strong>悦医健康</strong>
-          <small>MedCare Online</small>
+          <small>在线医疗服务</small>
         </div>
       </div>
 

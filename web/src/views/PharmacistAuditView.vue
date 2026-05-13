@@ -25,6 +25,8 @@ async function loadPending() {
       selected.value = null
       check.value = null
     }
+  } catch {
+    prescriptions.value = []
   } finally {
     loading.value = false
   }
@@ -32,9 +34,14 @@ async function loadPending() {
 
 async function selectPrescription(prescription: Prescription) {
   selected.value = prescription
-  check.value = await getPrescriptionAuditCheck(prescription.id)
-  auditResult.value = check.value.riskLevel === 'FORBIDDEN' ? 'REJECTED' : 'APPROVED'
-  advice.value = check.value.summary
+  try {
+    check.value = await getPrescriptionAuditCheck(prescription.id)
+    auditResult.value = check.value?.riskLevel === 'FORBIDDEN' ? 'REJECTED' : 'APPROVED'
+    advice.value = check.value?.summary || ''
+  } catch (error) {
+    check.value = null
+    alert(error instanceof Error ? error.message : '加载审核检查信息失败')
+  }
 }
 
 async function submitAudit() {

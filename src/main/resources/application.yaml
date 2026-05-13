@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   application:
     name: medical_care
   datasource:
@@ -6,6 +8,13 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+#  ai:
+#    openai:
+#      base-url: https://api.openai.com
+#      api-key: sk-xxx
+#      chat:
+#        options:
+#          model: gpt-4o-mini
 
 server:
   port: 8080
@@ -14,6 +23,8 @@ medical-care:
   auth:
     jwt-secret: ${JWT_SECRET:medical-care-phase-one-secret-change-me}
     token-expire-hours: ${JWT_EXPIRE_HOURS:24}
+  ai:
+    enabled: ${MEDICAL_CARE_AI_ENABLED:true}
 
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
